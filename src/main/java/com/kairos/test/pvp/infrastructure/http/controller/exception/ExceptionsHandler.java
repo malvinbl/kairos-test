@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
 
@@ -20,6 +21,23 @@ public class ExceptionsHandler {
 		log.error("Exception ocurred: ", e);
 		String error = "Malformed JSON request";
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(Map.of(ERROR, error));
+	}
+
+	@ExceptionHandler(ResponseStatusException.class)
+	public ResponseEntity<Map<String, Object>> handle(ResponseStatusException e) {
+		log.error("Exception ocurred: ", e);
+		HttpStatus statusCode = (HttpStatus) e.getStatusCode();
+		return switch (statusCode) {
+			case NOT_FOUND -> {
+				String error = "Resource not found";
+				yield ResponseEntity.status(HttpStatus.NOT_FOUND.value()).body(Map.of(ERROR, error));
+			}
+			case BAD_REQUEST -> {
+				String error = "Bad request";
+				yield ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(Map.of(ERROR, error));
+			}
+			default -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(Map.of(ERROR, e.getMessage()));
+		};
 	}
 
 	@ExceptionHandler(Exception.class)
