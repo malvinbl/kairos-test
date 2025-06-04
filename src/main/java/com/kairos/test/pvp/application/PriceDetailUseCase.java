@@ -2,7 +2,7 @@ package com.kairos.test.pvp.application;
 
 import com.kairos.test.pvp.domain.model.PriceDetail;
 import com.kairos.test.pvp.domain.repository.PriceRepository;
-import com.kairos.test.pvp.infrastructure.config.CacheConfig;
+import com.kairos.test.shared.infrastructure.config.CacheNames;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +21,7 @@ public class PriceDetailUseCase {
         this.pricePriorityComparator = Comparator.comparing(PriceDetail::priority);
     }
 
-    @Cacheable(value = CacheConfig.PRICE_DETAIL_CACHE, unless = "#result == null")
+    @Cacheable(value = CacheNames.PRICE_DETAIL_CACHE, unless = "#result == null")
     @Transactional(readOnly = true)
     public PriceDetail getPriceDetail(Long productId, Long brandId, LocalDateTime date) {
         return priceRepository.findPricingDetails(productId, brandId, date)
