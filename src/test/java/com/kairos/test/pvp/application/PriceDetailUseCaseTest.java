@@ -2,13 +2,12 @@ package com.kairos.test.pvp.application;
 
 import com.kairos.test.pvp.domain.model.PriceDetail;
 import com.kairos.test.pvp.domain.repository.PriceRepository;
+import com.kairos.test.pvp.domain.exception.PriceNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
@@ -110,11 +109,7 @@ class PriceDetailUseCaseTest {
 
 
         assertThatThrownBy(() -> priceService.getPriceDetail(productId, brandId, date))
-                .isInstanceOf(ResponseStatusException.class)
-                .satisfies(ex -> {
-                    ResponseStatusException rse = (ResponseStatusException) ex;
-                    assertThat(rse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-                });
+                .isInstanceOf(PriceNotFoundException.class);
     }
 
 }
