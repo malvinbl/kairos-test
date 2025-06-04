@@ -26,20 +26,12 @@ public class PriceDetailUseCase {
     @Cacheable(value = CacheNames.PRICE_DETAIL_CACHE, unless = "#result == null")
     @Transactional(readOnly = true)
     public PriceDetail getPriceDetail(Long productId, Long brandId, LocalDateTime date) {
-        validateParams(productId, brandId, date);
-
         PriceDetail priceDetail = priceRepository.findPricingDetails(productId, brandId, date)
                 .max(pricePriorityComparator)
                 .orElse(null);
 
         validateResponse(priceDetail);
         return priceDetail;
-    }
-
-    private void validateParams(Long productId, Long brandId, LocalDateTime date) {
-        if (productId == null || brandId == null || date == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
     }
 
     private void validateResponse(PriceDetail priceDetail) {

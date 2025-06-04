@@ -136,4 +136,37 @@ class PriceControllerTest {
                 .andReturn().getResponse().getContentAsString();
     }
 
+    @Test
+    void test_NOT_FOUND_response() throws Exception {
+        mockMvc.perform(
+                        get(URL).contentType("application/json")
+                                .param("date", "2020-06-16T21:00:00")
+                                .param("productId", "3545599")
+                                .param("brandId", "1")
+                )
+                .andExpect(status().is(HttpStatus.NOT_FOUND.value()))
+                .andExpect(jsonPath("$.error", is("Resource not found")))
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    void test_param_not_informed_all() throws Exception {
+        mockMvc.perform(
+                        get(URL).contentType("application/json")
+                )
+                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    void test_param_not_informed_productId() throws Exception {
+        mockMvc.perform(
+                        get(URL).contentType("application/json")
+                        .param("date", "2020-06-16T21:00:00")
+                        .param("brandId", "1")
+                )
+                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                .andReturn().getResponse().getContentAsString();
+    }
+
 }
