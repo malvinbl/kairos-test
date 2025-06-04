@@ -2,7 +2,6 @@ package com.kairos.test.pvp.infrastructure.config;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.kairos.test.shared.infrastructure.config.CacheNames;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCache;
@@ -18,9 +17,11 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class CacheConfig {
 
+    public static final String PRICE_DETAIL_CACHE = "PRICE_DETAIL_CACHE";
+
     @Bean
     public CacheManager cacheManager() {
-        CaffeineCache priceDetailCache = buildCache(CacheNames.PRICE_DETAIL_CACHE, 60, TimeUnit.MINUTES, 100);
+        CaffeineCache priceDetailCache = buildCache(PRICE_DETAIL_CACHE, 60, TimeUnit.MINUTES, 100);
         List<CaffeineCache> caches = new ArrayList<>();
         caches.add(priceDetailCache);
 
